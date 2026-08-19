@@ -51,11 +51,12 @@ class LoginViewModel(
                 }
             }
             LoginAction.ShowLogin -> updateState {
-                copy(mode = AuthMode.LOGIN, errorMessage = null, infoMessage = null, verificationCode = "", password = "")
+                copy(mode = AuthMode.LOGIN, errorMessage = null, infoMessage = null, verificationCode = "")
             }
             LoginAction.ShowRegister -> updateState {
                 copy(mode = AuthMode.REGISTER, errorMessage = null, infoMessage = null, verificationCode = "")
             }
+            LoginAction.OpenPrivacyPolicy -> Unit
             LoginAction.ShowForgotPassword -> updateState {
                 copy(mode = AuthMode.FORGOT_PASSWORD, errorMessage = null, infoMessage = null, verificationCode = "", password = "")
             }

@@ -13,7 +13,10 @@ data class LoginState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val infoMessage: String? = null,
-) : UiState
+) : UiState {
+    val canSubmitLogin: Boolean
+        get() = email.isNotBlank() && password.isNotBlank()
+}
 
 enum class AuthMode {
     LOGIN,
@@ -33,5 +36,6 @@ sealed interface LoginAction : UiAction {
     data object ShowForgotPassword : LoginAction
     data object ResendCode : LoginAction
     data object ResendResetCode : LoginAction
+    data object OpenPrivacyPolicy : LoginAction
     data object Submit : LoginAction
 }

@@ -26,8 +26,14 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.uiToolingPreview)
+            implementation(compose.components.resources)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.fiverules.common.uikit"
 }
 
 android {
