@@ -1,0 +1,58 @@
+# Gradle
+.gradle/
+**/build/
+!src/**/build/
+
+# Kotlin
+.kotlin/
+kotlin-js-store/**
+!kotlin-js-store/yarn.lock
+
+# Android / local machine
+local.properties
+*.iml
+.idea/*
+!.idea/runConfigurations/
+!.idea/runConfigurations/**
+!.idea/vcs.xml
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# iOS / Xcode
+xcuserdata/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+Pods/
+
+# JS / Node
+node_modules/
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+docker/secrets/
+docker/.env
+secrets/
+*.keystore
+*.jks
+credentials.json
+google-services.json
+
+# OS / editor
+.DS_Store
+*.swp
+*~
