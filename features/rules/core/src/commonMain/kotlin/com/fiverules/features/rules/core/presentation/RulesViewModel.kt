@@ -1,56 +1,88 @@
 package com.fiverules.features.rules.core.presentation
 
-import androidx.lifecycle.viewModelScope
 import com.fiverules.common.core.MviViewModel
 import com.fiverules.common.core.UiAction
 import com.fiverules.common.core.UiState
-import com.fiverules.common.models.rules.RuleDto
-import com.fiverules.common.models.rules.TaskDto
-import com.fiverules.features.rules.core.data.RulesApi
-import kotlinx.coroutines.launch
+import com.fiverules.common.navigation.AppNavigator
+import com.fiverules.features.home.api.HomeRoute
+import com.fiverules.features.profile.api.ProfileRoute
+
+enum class TaskCardStatus { Highlighted, Default, Completed, Locked }
+
+data class TaskCardUi(
+    val id: String,
+    val title: String,
+    val description: String,
+    val status: TaskCardStatus,
+)
+
+data class TaskSectionUi(
+    val title: String,
+    val tasks: List<TaskCardUi>,
+)
 
 data class RulesUiState(
-    val rules: List<RuleDto> = emptyList(),
-    val tasks: List<TaskDto> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val sections: List<TaskSectionUi> = emptyList(),
 ) : UiState
 
 sealed interface RulesUiAction : UiAction {
-    data object Refresh : RulesUiAction
+    data object OpenHome : RulesUiAction
+    data object OpenLessons : RulesUiAction
+    data object OpenProfile : RulesUiAction
+    data class OpenTask(val id: String) : RulesUiAction
 }
 
 class RulesViewModel(
-    private val rulesApi: RulesApi,
+    private val navigator: AppNavigator,
 ) : MviViewModel<RulesUiState, RulesUiAction>() {
-    override fun initState(): RulesUiState = RulesUiState()
-
-    init {
-        refresh()
-    }
+    override fun initState(): RulesUiState = RulesUiState(
+        sections = MockTaskSections,
+    )
 
     override fun onAction(action: RulesUiAction) {
         when (action) {
-            RulesUiAction.Refresh -> refresh()
-        }
-    }
-
-    private fun refresh() {
-        viewModelScope.launch {
-            updateState { copy(isLoading = true, errorMessage = null) }
-            try {
-                val rules = rulesApi.getRules()
-                val tasks = rulesApi.getTasks()
-                updateState {
-                    copy(
-                        rules = rules,
-                        tasks = tasks,
-                        isLoading = false,
-                    )
-                }
-            } catch (_: Exception) {
-                updateState { copy(isLoading = false, errorMessage = "Не удалось загрузить правила") }
-            }
+            RulesUiAction.OpenHome -> navigator.navigateTab(HomeRoute, HomeRoute)
+            RulesUiAction.OpenProfile -> navigator.navigateTab(ProfileRoute, HomeRoute)
+            RulesUiAction.OpenLessons,
+            is RulesUiAction.OpenTask,
+            -> Unit
         }
     }
 }
+
+private val MockTaskSections = listOf(
+    TaskSectionUi(
+        title = "Today",
+        tasks = listOf(
+            TaskCardUi(
+                id = "today-1",
+                title = "Don't complain",
+                description = "Catch every complaint and turn it into gratitude.",
+                status = TaskCardStatus.Highlighted,
+            ),
+        ),
+    ),
+    TaskSectionUi(
+        title = "Tasks",
+        tasks = listOf(
+            TaskCardUi(
+                id = "task-2",
+                title = "Don't gossip",
+                description = "Speak only of people as if they were in the room.",
+                status = TaskCardStatus.Completed,
+            ),
+            TaskCardUi(
+                id = "task-3",
+                title = "Be on time",
+                description = "Available after you complete today's task.",
+                status = TaskCardStatus.Locked,
+            ),
+            TaskCardUi(
+                id = "task-4",
+                title = "Keep your word",
+                description = "Available on the next level.",
+                status = TaskCardStatus.Locked,
+            ),
+        ),
+    ),
+)

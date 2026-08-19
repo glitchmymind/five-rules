@@ -22,11 +22,10 @@ import com.fiverules.common.models.feed.FeedDto
 import com.fiverules.common.uikit.components.FrBanner
 import com.fiverules.common.uikit.components.FrDailyRuleButton
 import com.fiverules.common.uikit.components.FrPreviewMessage
+import com.fiverules.common.uikit.components.FrMainTab
+import com.fiverules.common.uikit.components.FrMainToolbar
 import com.fiverules.common.uikit.components.FrScreenBackground
 import com.fiverules.common.uikit.components.FrScreenHeader
-import com.fiverules.common.uikit.components.FrToolbar
-import com.fiverules.common.uikit.components.FrToolbarItem
-import com.fiverules.common.uikit.icons.FrIcons
 import com.fiverules.common.uikit.theme.FrSize
 import com.fiverules.common.uikit.theme.FrTheme
 import com.fiverules.common.uikit.theme.Spacing
@@ -126,33 +125,16 @@ private fun HomeScreen(
                     }
                 }
             }
-            FrToolbar(
-                items = listOf(
-                    FrToolbarItem(
-                        icon = FrIcons.NavHome,
-                        contentDescription = "Main",
-                        selected = true,
-                        onClick = { onAction(HomeUiAction.Refresh) },
-                    ),
-                    FrToolbarItem(
-                        icon = FrIcons.Placeholder,
-                        contentDescription = "Tasks",
-                        selected = false,
-                        onClick = { onAction(HomeUiAction.OpenTasks) },
-                    ),
-                    FrToolbarItem(
-                        icon = FrIcons.NavLessons,
-                        contentDescription = "Lessons",
-                        selected = false,
-                        onClick = { onAction(HomeUiAction.OpenLessons) },
-                    ),
-                    FrToolbarItem(
-                        icon = FrIcons.NavProfile,
-                        contentDescription = "Profile",
-                        selected = false,
-                        onClick = { onAction(HomeUiAction.OpenProfile) },
-                    ),
-                ),
+            FrMainToolbar(
+                selected = FrMainTab.Home,
+                onTabClick = { tab ->
+                    when (tab) {
+                        FrMainTab.Home -> onAction(HomeUiAction.Refresh)
+                        FrMainTab.Tasks -> onAction(HomeUiAction.OpenTasks)
+                        FrMainTab.Lessons -> onAction(HomeUiAction.OpenLessons)
+                        FrMainTab.Profile -> onAction(HomeUiAction.OpenProfile)
+                    }
+                },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()

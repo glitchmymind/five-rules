@@ -7,6 +7,8 @@ import com.fiverules.common.core.UiState
 import com.fiverules.common.models.feed.FeedDto
 import com.fiverules.common.navigation.AppNavigator
 import com.fiverules.features.feed.core.data.FeedApi
+import com.fiverules.features.home.api.HomeRoute
+import com.fiverules.features.profile.api.ProfileRoute
 import com.fiverules.features.rules.api.RulesRoute
 import com.fiverules.features.rules.core.data.RulesApi
 import kotlinx.coroutines.launch
@@ -43,11 +45,11 @@ class HomeViewModel(
         when (action) {
             HomeUiAction.Refresh -> refresh()
             HomeUiAction.OpenDailyRule,
-            HomeUiAction.OpenTasks,
-            HomeUiAction.OpenLessons,
             HomeUiAction.OpenBanner,
-            -> navigator.navigate(RulesRoute)
-            HomeUiAction.OpenProfile -> Unit
+            HomeUiAction.OpenTasks,
+            -> navigator.navigateTab(RulesRoute, HomeRoute)
+            HomeUiAction.OpenProfile -> navigator.navigateTab(ProfileRoute, HomeRoute)
+            HomeUiAction.OpenLessons -> Unit
         }
     }
 

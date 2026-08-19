@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.features.home.api)
             implementation(projects.features.auth.api)
             implementation(projects.features.rules.api)
+            implementation(projects.features.profile.api)
             implementation(projects.features.rules.core)
             implementation(projects.features.feed.api)
             implementation(projects.features.feed.core)

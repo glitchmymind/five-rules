@@ -52,6 +52,9 @@ include(":features:rules:ui")
 include(":features:feed:api")
 include(":features:feed:core")
 include(":features:feed:ui")
+include(":features:profile:api")
+include(":features:profile:core")
+include(":features:profile:ui")
 
 include(":composeApp")
 

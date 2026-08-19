@@ -16,6 +16,8 @@ import com.fiverules.features.feed.core.di.feedCoreModule
 import com.fiverules.features.feed.ui.di.feedUiModule
 import com.fiverules.features.home.core.di.homeCoreModule
 import com.fiverules.features.home.ui.di.homeUiModule
+import com.fiverules.features.profile.core.di.profileCoreModule
+import com.fiverules.features.profile.ui.di.profileUiModule
 import com.fiverules.features.rules.core.di.rulesCoreModule
 import com.fiverules.features.rules.ui.di.rulesUiModule
 import com.russhwolf.settings.Settings
@@ -54,7 +56,8 @@ val navigationModule = module {
 val featureModules: List<Module> = authCoreModule + authUiModule +
     homeCoreModule + homeUiModule +
     rulesCoreModule + rulesUiModule +
-    feedCoreModule + feedUiModule
+    feedCoreModule + feedUiModule +
+    profileCoreModule + profileUiModule
 
 fun initKoin(
     environment: AppEnvironment = AppEnvironment.current,

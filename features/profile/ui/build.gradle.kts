@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.fiverules.kmp.dependencies)
 }
 
@@ -19,29 +21,27 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.common.core)
-            implementation(projects.common.network)
-            implementation(projects.common.navigation)
-            implementation(projects.features.auth.core)
-            implementation(projects.features.auth.ui)
-            implementation(projects.features.home.core)
-            implementation(projects.features.home.ui)
-            implementation(projects.features.rules.core)
-            implementation(projects.features.rules.ui)
-            implementation(projects.features.feed.core)
-            implementation(projects.features.feed.ui)
             implementation(projects.features.profile.core)
-            implementation(projects.features.profile.ui)
+            implementation(projects.features.profile.api)
+            implementation(projects.common.core)
+            implementation(projects.common.uikit)
+            implementation(projects.common.navigation)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.koin.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.multiplatform.settings)
-            implementation(libs.multiplatform.settings.noArg)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
         }
     }
 }
 
 android {
-    namespace = "com.fiverules.common.di"
+    namespace = "com.fiverules.features.profile.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

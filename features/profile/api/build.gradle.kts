@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.fiverules.kmp.dependencies)
 }
@@ -20,24 +22,15 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.features.rules.api)
-            implementation(projects.features.home.api)
-            implementation(projects.features.profile.api)
-            implementation(projects.common.core)
-            implementation(projects.common.models)
-            implementation(projects.common.network)
             implementation(projects.common.navigation)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.ktor.client.core)
-            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.compose.runtime)
             implementation(libs.kotlinx.serialization.json)
         }
     }
 }
 
 android {
-    namespace = "com.fiverules.features.rules.core"
+    namespace = "com.fiverules.features.profile.api"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -47,4 +40,3 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
-

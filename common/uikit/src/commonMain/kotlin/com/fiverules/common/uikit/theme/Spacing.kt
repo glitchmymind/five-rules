@@ -39,8 +39,14 @@ object FrSize {
     val circleButton = 56.dp
     val textField = 45.dp
     val avatar = 40.dp
+    val avatarProfile = 150.dp
     val banner = 74.dp
+    val taskCard = 107.dp
+    val progressBar = 10.dp
     val header = 72.dp
+    val profileHead = 52.dp
+    val listRule = 64.dp
+    val listTask = 40.dp
     val dailyRule = 221.dp
     val dailyRuleAura = 112.dp
     val toolbar = 68.dp

@@ -24,6 +24,8 @@ import com.fiverules.common.uikit.theme.FrRadius
 import com.fiverules.common.uikit.theme.FrSize
 import com.fiverules.common.uikit.theme.FrTheme
 
+enum class FrMainTab { Home, Tasks, Lessons, Profile }
+
 data class FrToolbarItem(
     val icon: FrIcons,
     val contentDescription: String,
@@ -73,6 +75,43 @@ fun FrToolbar(
             }
         }
     }
+}
+
+@Composable
+fun FrMainToolbar(
+    selected: FrMainTab,
+    onTabClick: (FrMainTab) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FrToolbar(
+        items = listOf(
+            FrToolbarItem(
+                icon = FrIcons.NavHome,
+                contentDescription = "Main",
+                selected = selected == FrMainTab.Home,
+                onClick = { onTabClick(FrMainTab.Home) },
+            ),
+            FrToolbarItem(
+                icon = FrIcons.Placeholder,
+                contentDescription = "Tasks",
+                selected = selected == FrMainTab.Tasks,
+                onClick = { onTabClick(FrMainTab.Tasks) },
+            ),
+            FrToolbarItem(
+                icon = FrIcons.NavLessons,
+                contentDescription = "Lessons",
+                selected = selected == FrMainTab.Lessons,
+                onClick = { onTabClick(FrMainTab.Lessons) },
+            ),
+            FrToolbarItem(
+                icon = FrIcons.NavProfile,
+                contentDescription = "Profile",
+                selected = selected == FrMainTab.Profile,
+                onClick = { onTabClick(FrMainTab.Profile) },
+            ),
+        ),
+        modifier = modifier,
+    )
 }
 
 @Composable
