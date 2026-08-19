@@ -79,8 +79,10 @@ class EmailService {
             logger.warn("Resend rejected {} from {}. Retrying with {}", logLabel, configuredFrom, RESEND_ONBOARDING_FROM)
             val retry = postResend(apiKey, RESEND_ONBOARDING_FROM, email, subject, html, text, logLabel)
             if (retry.isSuccess) return
+            logger.info("EMAIL_PROVIDER fallback to console; {} code for {}: {}", logLabel, email, code)
             error(retry.message)
         }
+        logger.info("EMAIL_PROVIDER fallback to console; {} code for {}: {}", logLabel, email, code)
         error(first.message)
     }
 

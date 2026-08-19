@@ -8,6 +8,7 @@ import com.fiverules.server.core.JwtConfig
 import com.fiverules.server.user.StoredUser
 import com.fiverules.server.user.UserRepository
 import com.fiverules.server.user.toResponse
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 class AuthRepository(
@@ -15,6 +16,8 @@ class AuthRepository(
     private val emailVerificationService: EmailVerificationService,
     private val passwordResetService: PasswordResetService,
 ) {
+    private val logger = LoggerFactory.getLogger(AuthRepository::class.java)
+
     suspend fun login(email: String, password: String, deviceId: String?): LoginOutcome {
         val user = userRepository.verifyPassword(email, password)
             ?: return LoginOutcome.InvalidCredentials
@@ -49,7 +52,7 @@ class AuthRepository(
                 password = request.password,
                 displayName = request.displayName,
             ) ?: return RegisterOutcome.Error
-            emailVerificationService.sendCode(updated)
+            sendVerificationCode(updated)
             return RegisterOutcome.PendingVerification(
                 RegistrationResponse(email = updated.email, verificationRequired = true),
             )
@@ -60,7 +63,7 @@ class AuthRepository(
             displayName = request.displayName,
         )
         val stored = userRepository.findByEmail(created.email) ?: return RegisterOutcome.Error
-        emailVerificationService.sendCode(stored)
+        sendVerificationCode(stored)
         return RegisterOutcome.Success(RegistrationResponse(email = stored.email))
     }
 
@@ -83,6 +86,13 @@ class AuthRepository(
         }
         val success = passwordResetService.resetPassword(normalized, code, newPassword)
         return if (success) ResetPasswordOutcome.Success else ResetPasswordOutcome.InvalidCode
+    }
+
+    private suspend fun sendVerificationCode(user: StoredUser) {
+        runCatching { emailVerificationService.sendCode(user) }
+            .onFailure { error ->
+                logger.error("Failed to send verification email to {}", user.email, error)
+            }
     }
 
     private fun issueTokens(user: StoredUser, deviceId: String): AuthTokensResponse {

@@ -20,23 +20,32 @@ object DatabaseFactory {
     private val logger = LoggerFactory.getLogger(DatabaseFactory::class.java)
 
     fun connect(): Database {
-        val hikari = HikariDataSource(
-            HikariConfig().apply {
-                jdbcUrl = AppConfig.jdbcUrl
-                username = AppConfig.dbUser
-                password = AppConfig.dbPassword
-                driverClassName = "org.postgresql.Driver"
-                maximumPoolSize = 10
-                isAutoCommit = false
-                transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-                validate()
-            },
-        )
-        return Database.connect(hikari)
+        logger.info("Connecting to PostgreSQL {} as {}", AppConfig.jdbcUrl, AppConfig.dbUser)
+        return try {
+            val hikari = HikariDataSource(
+                HikariConfig().apply {
+                    jdbcUrl = AppConfig.jdbcUrl
+                    username = AppConfig.dbUser
+                    password = AppConfig.dbPassword
+                    driverClassName = "org.postgresql.Driver"
+                    maximumPoolSize = 10
+                    connectionTimeout = 5_000
+                    isAutoCommit = false
+                    transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+                    validate()
+                },
+            )
+            Database.connect(hikari)
+        } catch (error: Exception) {
+            throw IllegalStateException(
+                "Cannot connect to ${AppConfig.jdbcUrl} as ${AppConfig.dbUser}: ${error.message}",
+                error,
+            )
+        }
     }
 
-    fun createSchema() {
-        transaction {
+    fun createSchema(database: Database) {
+        transaction(database) {
             SchemaUtils.create(
                 UsersTable,
                 EmailVerificationCodesTable,
@@ -54,7 +63,7 @@ object DatabaseFactory {
     fun init(): Database? {
         return try {
             val database = connect()
-            createSchema()
+            createSchema(database)
             database
         } catch (error: Exception) {
             logger.warn("Database is unavailable: ${error.message}")

@@ -14,7 +14,6 @@ local.properties
 .idea/*
 !.idea/runConfigurations/
 !.idea/runConfigurations/**
-!.idea/vcs.xml
 captures/
 .externalNativeBuild/
 .cxx/

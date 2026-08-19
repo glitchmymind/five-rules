@@ -5,6 +5,7 @@ import com.fiverules.server.core.AppConfig
 import com.fiverules.server.di.configureDi
 import com.fiverules.server.network.configureNetwork
 import io.ktor.server.application.Application
+import io.ktor.server.application.log
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
@@ -18,6 +19,13 @@ fun main() {
 }
 
 fun Application.module() {
+    log.info("Database: {} as {}", AppConfig.jdbcUrl, AppConfig.dbUser)
+    log.info(
+        "Email: provider={} from={} resendKey={}",
+        AppConfig.emailProvider,
+        AppConfig.emailFrom,
+        if (AppConfig.resendApiKey.isNullOrBlank()) "missing" else "loaded",
+    )
     configureDi()
     configureAuthentication()
     configureNetwork()

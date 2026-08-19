@@ -8,6 +8,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.application.log
 import io.ktor.server.plugins.callid.callId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.calllogging.CallLogging
@@ -68,13 +69,21 @@ fun Application.configureNetwork() {
 
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            call.application.log.error("Unhandled exception", cause)
             call.respond(
                 HttpStatusCode.InternalServerError,
                 ErrorResponse(
-                    error = cause.message ?: "Internal server error",
+                    error = cause.deepMessage() ?: "Internal server error",
                     requestId = call.callId,
                 ),
             )
         }
     }
 }
+
+private fun Throwable.deepMessage(): String? =
+    generateSequence(this) { it.cause }
+        .mapNotNull { it.message?.trim()?.takeIf(String::isNotEmpty) }
+        .distinct()
+        .joinToString(" <- ")
+        .takeIf { it.isNotEmpty() }

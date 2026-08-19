@@ -18,8 +18,8 @@ val coreModule = module {
 }
 
 val dbModule = module {
-    single<Database> {
-        DatabaseFactory.connect().also { DatabaseFactory.createSchema() }
+    single<Database>(createdAtStart = true) {
+        DatabaseFactory.connect().also { DatabaseFactory.createSchema(it) }
     }
 }
 

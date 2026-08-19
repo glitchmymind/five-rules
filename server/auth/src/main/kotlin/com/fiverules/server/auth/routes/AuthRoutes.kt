@@ -61,14 +61,7 @@ fun Route.authRoutes() {
 
         post("/register") {
             val body = call.receive<RegisterRequest>()
-            val outcome = runCatching { authRepository.register(body) }.getOrElse { error ->
-                call.respond(
-                    HttpStatusCode.BadGateway,
-                    ApiErrorResponse("email_send_failed", error.message ?: "Could not send verification email"),
-                )
-                return@post
-            }
-            when (outcome) {
+            when (val outcome = authRepository.register(body)) {
                 is RegisterOutcome.Success -> call.respond(HttpStatusCode.Created, outcome.response)
                 is RegisterOutcome.PendingVerification -> call.respond(HttpStatusCode.Created, outcome.response)
                 RegisterOutcome.EmailTaken -> call.respond(
@@ -105,7 +98,7 @@ fun Route.authRoutes() {
                 .onFailure { error ->
                     call.respond(
                         HttpStatusCode.BadGateway,
-                        ApiErrorResponse("email_send_failed", error.message ?: "Could not send verification email"),
+                        ApiErrorResponse("email_send_failed", error.deepMessage() ?: "Could not send verification email"),
                     )
                     return@post
                 }
@@ -118,7 +111,7 @@ fun Route.authRoutes() {
                 .onFailure { error ->
                     call.respond(
                         HttpStatusCode.BadGateway,
-                        ApiErrorResponse("email_send_failed", error.message ?: "Could not send reset email"),
+                        ApiErrorResponse("email_send_failed", error.deepMessage() ?: "Could not send reset email"),
                     )
                     return@post
                 }
@@ -147,3 +140,10 @@ fun Route.authRoutes() {
         }
     }
 }
+
+private fun Throwable.deepMessage(): String? =
+    generateSequence(this) { it.cause }
+        .mapNotNull { it.message?.trim()?.takeIf(String::isNotEmpty) }
+        .distinct()
+        .joinToString(" <- ")
+        .takeIf { it.isNotEmpty() }

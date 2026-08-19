@@ -10,31 +10,37 @@ object AppConfig {
     val host: String = System.getenv("HOST") ?: "0.0.0.0"
     val port: Int = System.getenv("PORT")?.toIntOrNull() ?: 8080
 
+    private val PG_HOST: String = System.getenv("PG_HOST") ?: "localhost"
+    private val PG_PORT: String = System.getenv("PG_PORT") ?: "5433"
+    private val PG_USER_NAME: String = System.getenv("PG_USER_NAME") ?: "postgres"
+    private val PG_PASSWORD: String = System.getenv("PG_PASSWORD") ?: "postgres"
+
     val jdbcUrl: String by lazy {
-        System.getenv("DATABASE_URL")?.trim()?.takeIf { it.isNotEmpty() }
-            ?: "jdbc:postgresql://$dbHost:$dbPort/$dbName"
+        "jdbc:postgresql://$dbHost:$dbPort/$dbName"
     }
 
     val dbHost: String by lazy {
-        System.getenv("PG_HOST")?.trim()?.takeIf { it.isNotEmpty() } ?: "localhost"
+        readSecret(System.getenv("DB_HOST_FILE"))
+            ?: PG_HOST
     }
     val dbPort: String by lazy {
-        System.getenv("PG_PORT")?.trim()?.takeIf { it.isNotEmpty() } ?: "5432"
+        readSecret(System.getenv("DB_PORT_FILE"))
+            ?: PG_PORT
     }
     val dbName: String by lazy {
-        System.getenv("DB_NAME")?.trim()?.takeIf { it.isNotEmpty() } ?: "five_rules"
+        readSecret(System.getenv("DB_NAME_FILE"))
+            ?: System.getenv("DB_NAME")?.trim()?.takeIf { it.isNotEmpty() }
+            ?: "five_rules"
     }
     val dbUser: String by lazy {
         readSecret(System.getenv("DB_USER_FILE"))
-            ?: System.getenv("DATABASE_USER")?.trim()?.takeIf { it.isNotEmpty() }
-            ?: System.getenv("PG_USER_NAME")?.trim()?.takeIf { it.isNotEmpty() }
-            ?: "postgres"
+            ?: System.getenv("DB_USER")?.trim()?.takeIf { it.isNotEmpty() }
+            ?: PG_USER_NAME
     }
     val dbPassword: String by lazy {
         readSecret(System.getenv("DB_PASSWORD_FILE"))
-            ?: System.getenv("DATABASE_PASSWORD")?.trim()?.takeIf { it.isNotEmpty() }
-            ?: System.getenv("PG_PASSWORD")?.trim()?.takeIf { it.isNotEmpty() }
-            ?: "postgres"
+            ?: System.getenv("DB_PASSWORD")?.trim()?.takeIf { it.isNotEmpty() }
+            ?: PG_PASSWORD
     }
 
     val jwtSecret: String by lazy {
@@ -79,6 +85,8 @@ object AppConfig {
             Paths.get("secrets", fileName),
             Paths.get(userDir, "docker/secrets", fileName),
             Paths.get(userDir, "secrets", fileName),
+            Paths.get(userDir, "..", "docker/secrets", fileName),
+            Paths.get(userDir, "../..", "docker/secrets", fileName),
         )
         return candidates
             .map { it.normalize().toAbsolutePath() }

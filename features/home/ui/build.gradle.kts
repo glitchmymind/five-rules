@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.features.home.core)
             implementation(projects.features.home.api)
             implementation(projects.common.core)
+            implementation(projects.common.models)
             implementation(projects.common.uikit)
             implementation(projects.common.navigation)
             implementation(libs.compose.runtime)

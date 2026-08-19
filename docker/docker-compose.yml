@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: five-rules-postgres
+    environment:
+      POSTGRES_DB: five_rules
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - five-rules-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d five_rules"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  five-rules-pgdata:

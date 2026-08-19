@@ -38,6 +38,13 @@ object FrSize {
     val actionButton = 36.dp
     val circleButton = 56.dp
     val textField = 45.dp
+    val avatar = 40.dp
+    val banner = 74.dp
+    val header = 72.dp
+    val dailyRule = 221.dp
+    val dailyRuleAura = 112.dp
+    val toolbar = 68.dp
+    val toolbarWidth = 272.dp
     val logoAuth = 76.dp to 112.dp
     val logoHeader = 38.dp to 56.dp
 }
